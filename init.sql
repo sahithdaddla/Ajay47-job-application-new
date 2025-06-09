@@ -1,4 +1,3 @@
-\c new_employee_db;
 
 -- Create employee_details table
 CREATE TABLE employee_details (

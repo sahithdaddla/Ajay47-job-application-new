@@ -144,26 +144,15 @@
             margin-top: 1rem;
         }
 
-        .view-button, .download-button {
+        .download-button {
             padding: 0.75rem 1.5rem;
             border: none;
             border-radius: 0.5rem;
             font-size: 1rem;
             cursor: pointer;
             color: #FFFFFF;
-            transition: background-color 0.3s;
-        }
-
-        .view-button {
-            background-color: #3B82F6;
-        }
-
-        .view-button:hover {
-            background-color: #2563EB;
-        }
-
-        .download-button {
             background-color: #10B981;
+            transition: background-color 0.3s;
         }
 
         .download-button:hover {
@@ -193,7 +182,7 @@
                 flex-direction: column;
             }
 
-            .view-button, .download-button {
+            .download-button {
                 width: 100%;
             }
         }
@@ -206,7 +195,7 @@
             <div class="circle"></div>
         </div>
         <h1>Access Offer Letter</h1>
-        <p>Enter your details to view or download your offer letter</p>
+        <p>Enter your details to download your offer letter</p>
     </div>
 
     <div class="container">
@@ -227,7 +216,7 @@
     </div>
 
     <script>
-        const BASE_URL = 'http://3.88.203.125:3221';
+        const BASE_URL = window.location.hostname === 'localhost' ? 'http://localhost:3221' : 'http://3.88.203.125:3221';
         const resultSection = document.getElementById('resultSection');
         const resultMessage = document.getElementById('resultMessage');
         const buttonGroup = document.getElementById('buttonGroup');
@@ -265,7 +254,7 @@
                 showOfferLetterOptions(result.data.offer_letter_path);
             } catch (error) {
                 let errorMessage;
-                if (error.message.includes('Failed to')) {
+                if (error.message.includes('Failed to fetch')) {
                     errorMessage = 'Unable to connect to the server. Please ensure the server is running.';
                 } else if (error.message.includes('HTTP 500')) {
                     errorMessage = 'Server error occurred. Please try again later or contact support.';
@@ -291,27 +280,42 @@
             resultMessage.textContent = '';
             buttonGroup.innerHTML = '';
 
-            const viewButton = document.createElement('button');
-            viewButton.className = 'view-button';
-            viewButton.textContent = 'View Offer Letter';
-            viewButton.onclick = () => {
-                window.open(`${BASE_URL}/api/files/${encodeURIComponent(offerLetterPath)}`, '_blank');
-            };
-
             const downloadButton = document.createElement('button');
             downloadButton.className = 'download-button';
             downloadButton.textContent = 'Download Offer Letter';
-            downloadButton.onclick = () => {
-                const link = document.createElement('a');
-                link.href = `${BASE_URL}/api/files/${encodeURIComponent(offerLetterPath)}`;
-                link.download = offerLetterPath.split('/').pop();
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-            };
+            downloadButton.onclick = () => handleDownload(offerLetterPath);
 
-            buttonGroup.appendChild(viewButton);
             buttonGroup.appendChild(downloadButton);
+        }
+
+        function handleDownload(offerLetterPath) {
+            const url = `${BASE_URL}/api/files/${encodeURIComponent(offerLetterPath)}`;
+            fetch(url, { method: 'GET' })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`Failed to download file: ${response.statusText}`);
+                    }
+                    return response.blob();
+                })
+                .then(blob => {
+                    const link = document.createElement('a');
+                    link.href = window.URL.createObjectURL(blob);
+                    link.download = offerLetterPath.split('/').pop();
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    window.URL.revokeObjectURL(link.href);
+                })
+                .catch(error => {
+                    console.error('Download error:', error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Download Error',
+                        text: error.message.includes('Failed to fetch')
+                            ? 'Unable to connect to the server. Please ensure the server is running.'
+                            : 'Failed to download the offer letter. It may not exist or the server is unavailable.'
+                    });
+                });
         }
 
         function showError(error) {

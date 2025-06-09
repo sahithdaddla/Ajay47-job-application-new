@@ -1,3 +1,5 @@
+-- Drop the employee_details table if it exists
+DROP TABLE IF EXISTS employee_details;
 
 -- Create employee_details table
 CREATE TABLE employee_details (
@@ -39,7 +41,7 @@ CREATE TABLE employee_details (
     updated_at TIMESTAMP
 );
 
--- Create index for faster queries
+-- Create indexes for faster queries
 CREATE INDEX idx_employee_details_reference_id ON employee_details(reference_id);
 CREATE INDEX idx_employee_details_email ON employee_details(email);
 CREATE INDEX idx_employee_details_status ON employee_details(status);
@@ -58,8 +60,8 @@ INSERT INTO employee_details (
     'REF-TEST1234', 'Engineering', 'Software Engineer', 'Bangalore', 500000,
     'Full-time', '2025-06-01', '2025-06-15', 'John Doe', 'john.doe@gmail.com',
     '1995-01-01', '9876543210', 'James Doe', '123 Main St, Bangalore', 2010,
-    85.5, 'uploads/ssc_doc_test.pdf', 2012, 88.0, 'uploads/intermediate_doc_test.pdf',
-    'XYZ University', 'REG12345', 2016, 90.0, 'Uploads/graduation_doc_test.pdf',
-    'AWS Certified Developer', 'Uploads/additional_doc_test.pdf', 'experienced', 3,
-    'ABC Corp', 'Junior Developer', 'Approved', 'uploads/offer_letter_test.pdf'
+    85.5, 'ssc_doc-TEST1234.pdf', 2012, 88.0, 'intermediate_doc-TEST1234.pdf',
+    'XYZ University', 'REG12345', 2016, 90.0, 'graduation_doc-TEST1234.pdf',
+    'AWS Certified Developer', 'additional_doc-TEST1234.pdf', 'experienced', 3,
+    'ABC Corp', 'Junior Developer', 'Approved', 'offer-TEST1234.pdf'
 );

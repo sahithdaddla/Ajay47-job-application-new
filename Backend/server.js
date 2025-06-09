@@ -275,7 +275,7 @@ app.get('/api/offer-letter', async (req, res) => {
 
     res.json({
       success: true,
-      data: { offer_letter_path: path.basename(offerLetterPath) },
+      data: { offer_letter_path: offerLetterPath }, // Return only the filename
     });
   } catch (error) {
     console.error('Error retrieving offer letter:', error);
@@ -333,11 +333,11 @@ app.post('/api/applications', upload.fields(uploadFields), async (req, res) => {
       return res.status(400).json({ success: false, message: 'Required documents missing' });
     }
 
-    // Store file paths
-    data.ssc_doc_path = files.ssc_doc ? files.ssc_doc[0].path : null;
-    data.intermediate_doc_path = files.intermediate_doc ? files.intermediate_doc[0].path : null;
-    data.graduation_doc_path = files.graduation_doc ? files.graduation_doc[0].path : null;
-    data.additional_files_path = files.additional_files ? files.additional_files[0].path : null;
+    // Store only filenames
+    data.ssc_doc_path = files.ssc_doc ? files.ssc_doc[0].filename : null;
+    data.intermediate_doc_path = files.intermediate_doc ? files.intermediate_doc[0].filename : null;
+    data.graduation_doc_path = files.graduation_doc ? files.graduation_doc[0].filename : null;
+    data.additional_files_path = files.additional_files ? files.additional_files[0].filename : null;
 
     // Check for duplicate email or mobile number
     const duplicateCheck = await pool.query(
@@ -505,13 +505,13 @@ app.post('/api/applications/:id/offer-letter', upload.single('offerLetter'), asy
     if (!req.file) {
       return res.status(400).json({ success: false, message: 'No file uploaded' });
     }
-    const filePath = req.file.path;
+    const filename = req.file.filename; // Store only the filename
     const result = await pool.query(
       'UPDATE employee_details SET offer_letter_path = $1, updated_at = NOW() WHERE id = $2 RETURNING *',
-      [filePath, id]
+      [filename, id]
     );
     if (result.rows.length === 0) {
-      fs.unlinkSync(filePath);
+      fs.unlinkSync(path.join(uploadsDir, filename));
       return res.status(404).json({ success: false, message: 'Application not found' });
     }
     res.json({
@@ -520,8 +520,8 @@ app.post('/api/applications/:id/offer-letter', upload.single('offerLetter'), asy
     });
   } catch (error) {
     console.error('Error uploading offer letter:', error);
-    if (req.file && fs.existsSync(req.file.path)) {
-      fs.unlinkSync(req.file.path);
+    if (req.file && fs.existsSync(path.join(uploadsDir, req.file.filename))) {
+      fs.unlinkSync(path.join(UploadsDir, req.file.filename));
     }
     res.status(500).json({
       success: false,

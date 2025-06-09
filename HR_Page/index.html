@@ -12,7 +12,6 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="icon" type="image/png" href="https://favicon.io/favicon-16x16.png">
     <style>
-        /* Custom styles for animations and overrides */
         .fade-in {
             animation: fadeIn 0.5s ease-in-out;
         }
@@ -22,19 +21,16 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Ensure table is scrollable on small screens */
         .table-container {
             overflow-x: auto;
         }
 
-        /* Custom modal styles */
         .modal-content {
             max-height: 80vh;
             overflow-y: auto;
             position: relative;
         }
 
-        /* Close button styles */
         .modal-close {
             position: absolute;
             top: 1rem;
@@ -49,7 +45,6 @@
             color: #1f2937;
         }
 
-        /* Gradient button */
         .gradient-button {
             background: linear-gradient(to right, #3B82F6, #7C3AED);
             transition: background 0.3s;
@@ -59,9 +54,23 @@
             background: linear-gradient(to right, #2563EB, #6D28D9);
         }
 
-        /* Table header cursor */
         th {
             cursor: pointer;
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
     </style>
 </head>
@@ -209,7 +218,7 @@
     </div>
 
     <script>
-        const BASE_URL = 'http://3.88.203.125:3221';
+        const BASE_URL = window.location.hostname === 'localhost' ? 'http://localhost:3221' : 'http://3.88.203.125:3221';
         let currentApplicationId = null;
         let applicationsData = [];
         let currentSection = 'pending';
@@ -221,42 +230,52 @@
         async function fetchApplications() {
             try {
                 console.log('Fetching applications from:', `${BASE_URL}/api/applications`);
+                const tbodies = ['pendingApplicationsBody', 'approvedApplicationsBody', 'rejectedApplicationsBody'];
+                tbodies.forEach(id => {
+                    document.getElementById(id).innerHTML = '<tr><td colspan="9" class="p-3 text-center"><span class="loading-spinner"></span> Loading...</td></tr>';
+                });
+
                 const response = await fetch(`${BASE_URL}/api/applications`, {
                     method: 'GET',
                     headers: { 'Content-Type': 'application/json' }
                 });
                 console.log('Fetch response status:', response.status, response.statusText);
+                
                 if (!response.ok) {
                     const errorText = await response.text();
                     console.error('Fetch error response:', errorText);
                     throw new Error(`HTTP ${response.status}: ${errorText}`);
                 }
+
                 const result = await response.json();
                 console.log('Parsed server response:', result);
-                if (!result.success) throw new Error(result.message);
-                applicationsData = result.data;
+
+                if (!result.success) throw new Error(result.message || 'Failed to fetch applications');
+
+                applicationsData = Array.isArray(result.data) ? result.data : [];
                 applicationsData.forEach(app => {
-                    console.log(`Application ID ${app.id}: referenceId=${app.reference_id}, status=${app.status}, offer_letter_path=${app.offer_letter_path}`);
+                    console.log(`Application ID ${app.id}: referenceId=${app.reference_id || 'N/A'}, status=${app.status || 'N/A'}, offer_letter_path=${app.offer_letter_path || 'N/A'}`);
                 });
+
                 populateFilters();
-                applyFilters();
                 updateCounts();
+                applyFilters();
                 showSection(currentSection);
             } catch (error) {
                 console.error('Fetch applications error:', error);
-                let errorMessage = error.message.includes('Failed to fetch')
-                    ? 'Unable to connect to the server at http://3.88.203.125:3221. Please ensure the server is running.'
-                    : error.message.includes('CORS')
-                    ? 'CORS error: Please ensure the server allows requests from this origin.'
-                    : error.message;
+                applicationsData = [];
+                updateCounts();
+                applyFilters();
+                showSection(currentSection);
                 Swal.fire({
                     icon: 'error',
                     title: 'Error Fetching Applications',
-                    text: errorMessage
+                    text: error.message.includes('Failed to fetch')
+                        ? 'Unable to connect to the server. Please ensure the server is running.'
+                        : error.message.includes('CORS')
+                        ? 'CORS error: Please check server configuration.'
+                        : 'Failed to load applications. Please try again later.'
                 });
-                applicationsData = [];
-                updateCounts();
-                showSection(currentSection);
             }
         }
 
@@ -273,14 +292,14 @@
         }
 
         function populateFilters() {
-            const departments = [...new Set(applicationsData.map(app => app.department).filter(Boolean))];
-            const jobRoles = [...new Set(applicationsData.map(app => app.job_role).filter(Boolean))];
-
             const departmentFilter = document.getElementById('departmentFilter');
             const jobRoleFilter = document.getElementById('jobRoleFilter');
 
             departmentFilter.innerHTML = '<option value="">All Departments</option>';
             jobRoleFilter.innerHTML = '<option value="">All Job Roles</option>';
+
+            const departments = [...new Set(applicationsData.map(app => app.department).filter(Boolean))];
+            const jobRoles = [...new Set(applicationsData.map(app => app.job_role).filter(Boolean))];
 
             departments.forEach(dept => {
                 const option = document.createElement('option');
@@ -312,21 +331,20 @@
                 return matchesSearch && matchesDepartment && matchesJobRole;
             });
 
-            console.log('Filtered applications:', filteredData);
+            console.log('Filtered applications count:', filteredData.length);
             displayApplications(filteredData);
         }
 
         function showSection(section) {
             currentSection = section;
-            document.getElementById('pendingSection').classList.add('hidden');
-            document.getElementById('approvedSection').classList.add('hidden');
-            document.getElementById('rejectedSection').classList.add('hidden');
-
+            ['pendingSection', 'approvedSection', 'rejectedSection'].forEach(id => {
+                document.getElementById(id).classList.add('hidden');
+            });
             document.getElementById(`${section}Section`).classList.remove('hidden');
             applyFilters();
         }
 
-        function displayApplications(applications) {
+        function displayApplications(applications = []) {
             const pendingTbody = document.getElementById('pendingApplicationsBody');
             const approvedTbody = document.getElementById('approvedApplicationsBody');
             const rejectedTbody = document.getElementById('rejectedApplicationsBody');
@@ -335,7 +353,7 @@
             approvedTbody.innerHTML = '';
             rejectedTbody.innerHTML = '';
 
-            if (applications.length === 0) {
+            if (!applications.length) {
                 const noDataRowPending = '<tr><td colspan="9" class="p-3 text-center text-gray-500">No applications found.</td></tr>';
                 const noDataRowApproved = '<tr><td colspan="10" class="p-3 text-center text-gray-500">No applications found.</td></tr>';
                 const noDataRowRejected = '<tr><td colspan="9" class="p-3 text-center text-gray-500">No applications found.</td></tr>';
@@ -346,23 +364,23 @@
             }
 
             applications.forEach(app => {
-                console.log(`Processing application ID ${app.id}: status=${app.status}, offer_letter_path=${app.offer_letter_path}`);
+                console.log(`Rendering application ID ${app.id}: status=${app.status || 'N/A'}`);
                 const row = document.createElement('tr');
                 row.className = 'border-b';
-                
-                let rowContent = `
-                    <td class="p-3">${app.reference_id || '-'}</td>
-                    <td class="p-3">${app.full_name || '-'}</td>
-                    <td class="p-3">${app.email || '-'}</td>
-                    <td class="p-3">${app.mobile_number || '-'}</td>
-                    <td class="p-3">${app.department || '-'}</td>
-                    <td class="p-3">${app.job_role || '-'}</td>
+
+                const baseRowContent = `
+                    <td class="p-3">${displayValue(app.reference_id)}</td>
+                    <td class="p-3">${displayValue(app.full_name)}</td>
+                    <td class="p-3">${displayValue(app.email)}</td>
+                    <td class="p-3">${displayValue(app.mobile_number)}</td>
+                    <td class="p-3">${displayValue(app.department)}</td>
+                    <td class="p-3">${displayValue(app.job_role)}</td>
                     <td class="p-3">
                         <span class="${
                             app.status === 'Pending' ? 'text-yellow-500' :
                             app.status === 'Approved' ? 'text-green-500' :
                             'text-red-500'
-                        } font-medium">${app.status || 'Pending'}</span>
+                        } font-medium">${displayValue(app.status)}</span>
                     </td>
                     <td class="p-3">${formatDateTime(app.created_at)}</td>
                     <td class="p-3">
@@ -370,22 +388,16 @@
                     </td>
                 `;
 
-                if (app.status === 'Pending') {
-                    row.innerHTML = rowContent;
-                    pendingTbody.appendChild(row.cloneNode(true));
-                } else if (app.status === 'Rejected') {
-                    row.innerHTML = rowContent;
-                    rejectedTbody.appendChild(row.cloneNode(true));
-                } else if (app.status === 'Approved') {
+                if (app.status === 'Approved') {
                     row.innerHTML = `
-                        <td class="p-3">${app.reference_id || '-'}</td>
-                        <td class="p-3">${app.full_name || '-'}</td>
-                        <td class="p-3">${app.email || '-'}</td>
-                        <td class="p-3">${app.mobile_number || '-'}</td>
-                        <td class="p-3">${app.department || '-'}</td>
-                        <td class="p-3">${app.job_role || '-'}</td>
+                        <td class="p-3">${displayValue(app.reference_id)}</td>
+                        <td class="p-3">${displayValue(app.full_name)}</td>
+                        <td class="p-3">${displayValue(app.email)}</td>
+                        <td class="p-3">${displayValue(app.mobile_number)}</td>
+                        <td class="p-3">${displayValue(app.department)}</td>
+                        <td class="p-3">${displayValue(app.job_role)}</td>
                         <td class="p-3">
-                            <span class="text-green-500 font-medium">${app.status}</span>
+                            <span class="text-green-500 font-medium">${displayValue(app.status)}</span>
                         </td>
                         <td class="p-3">
                             ${app.offer_letter_path 
@@ -397,7 +409,13 @@
                             <button class="gradient-button text-white px-3 py-1 rounded-lg" onclick="viewDetails(${app.id})">View Details</button>
                         </td>
                     `;
-                    approvedTbody.appendChild(row.cloneNode(true));
+                    approvedTbody.appendChild(row);
+                } else if (app.status === 'Rejected') {
+                    row.innerHTML = baseRowContent;
+                    rejectedTbody.appendChild(row);
+                } else {
+                    row.innerHTML = baseRowContent;
+                    pendingTbody.appendChild(row);
                 }
             });
         }
@@ -405,40 +423,46 @@
         async function viewDetails(id) {
             try {
                 console.log(`Fetching details for application ID ${id} from: ${BASE_URL}/api/applications/${id}`);
+                document.getElementById('applicationDetails').innerHTML = '<div class="p-3 text-center"><span class="loading-spinner"></span> Loading details...</div>';
+
                 const response = await fetch(`${BASE_URL}/api/applications/${id}`, {
                     method: 'GET',
                     headers: { 'Content-Type': 'application/json' }
                 });
                 console.log('Fetch details response status:', response.status, response.statusText);
+
                 if (!response.ok) {
                     const errorText = await response.text();
                     console.error('Fetch details error response:', errorText);
                     throw new Error(`HTTP ${response.status}: ${errorText}`);
                 }
+
                 const result = await response.json();
                 console.log('Parsed details response:', result);
-                if (!result.success) throw new Error(result.message);
+
+                if (!result.success) throw new Error(result.message || 'Failed to fetch application details');
+
                 currentApplicationId = id;
-                console.log(`HR side referenceId for app ${id} (details view): ${result.data.reference_id}`);
-                showApplicationDetails(result.data);
+                showApplicationDetails(result.data || {});
             } catch (error) {
                 console.error('Fetch details error:', error);
+                document.getElementById('applicationDetails').innerHTML = '';
                 Swal.fire({
                     icon: 'error',
                     title: 'Error Fetching Details',
                     text: error.message.includes('Failed to fetch')
                         ? 'Unable to connect to the server. Please ensure the server is running.'
                         : error.message.includes('CORS')
-                        ? 'CORS error: Please ensure the server allows requests from this origin.'
-                        : error.message
+                        ? 'CORS error: Please check server configuration.'
+                        : 'Failed to load application details. Please try again.'
                 });
             }
         }
 
         function formatDate(dateStr) {
-            if (!dateStr) return '';
+            if (!dateStr) return '-';
             const date = new Date(dateStr);
-            return isNaN(date.getTime()) ? '' : date.toLocaleDateString('en-US');
+            return isNaN(date.getTime()) ? '-' : date.toLocaleDateString('en-US');
         }
 
         function formatDateTime(dateStr) {
@@ -448,10 +472,37 @@
         }
 
         function displayValue(value) {
-            return value || value === 0 ? value : '';
+            return value !== null && value !== undefined ? value : '-';
+        }
+
+        function handleFileDownload(event) {
+            event.preventDefault();
+            const url = event.target.href;
+            console.log('Downloading file:', url);
+            fetch(url, { method: 'GET' })
+                .then(response => {
+                    if (!response.ok) throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                    return response.blob();
+                })
+                .then(blob => {
+                    const link = document.createElement('a');
+                    link.href = window.URL.createObjectURL(blob);
+                    link.download = url.split('/').pop();
+                    link.click();
+                    window.URL.revokeObjectURL(link.href);
+                })
+                .catch(error => {
+                    console.error('Download error:', error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Download Error',
+                        text: 'Failed to download the file. Please try again.'
+                    });
+                });
         }
 
         function showApplicationDetails(data) {
+            console.log('Rendering application details:', data);
             const detailsDiv = document.getElementById('applicationDetails');
             const documentsDiv = document.getElementById('documentLinks');
             const statusSelect = document.getElementById('statusSelect');
@@ -477,7 +528,7 @@
                 <div class="mb-2"><strong class="w-48 inline-block text-gray-600">Date of Birth:</strong> <span>${formatDate(data.dob)}</span></div>
                 <div class="mb-2"><strong class="w-48 inline-block text-gray-600">Father's Name:</strong> <span>${displayValue(data.father_name)}</span></div>
                 <div class="mb-2"><strong class="w-48 inline-block text-gray-600">Permanent Address:</strong> <span>${displayValue(data.permanent_address)}</span></div>
-                <div class="mb-2"><strong class="w-48 inline-block text-gray-600">Expected Salary:</strong> <span>${data.expected_salary ? '₹' + parseInt(data.expected_salary).toLocaleString('en-IN') : ''}</span></div>
+                <div class="mb-2"><strong class="w-48 inline-block text-gray-600">Expected Salary:</strong> <span>${data.expected_salary ? '₹' + parseInt(data.expected_salary).toLocaleString('en-IN') : '-'}</span></div>
                 <div class="mb-2"><strong class="w-48 inline-block text-gray-600">Interview Date:</strong> <span>${formatDate(data.interview_date)}</span></div>
                 <div class="mb-2"><strong class="w-48 inline-block text-gray-600">Joining Date:</strong> <span>${formatDate(data.joining_date)}</span></div>
                 <div class="mb-2"><strong class="w-48 inline-block text-gray-600">Employment Type:</strong> <span>${displayValue(data.employment_type)}</span></div>
@@ -500,38 +551,46 @@
                 <div class="mb-2">
                     <strong class="w-48 inline-block text-gray-600">SSC Document:</strong>
                     ${data.ssc_doc_path 
-                        ? `<a href="${BASE_URL}/api/files/${encodeURIComponent(data.ssc_doc_path)}" class="bg-green-500 text-white px-3 py-1 rounded-lg hover:bg-green-600 transition" download>Download SSC</a>`
+                        ? `<a href="${BASE_URL}/api/files/${encodeURIComponent(data.ssc_doc_path)}" class="bg-green-500 text-white px-3 py-1 rounded-lg hover:bg-green-600 transition" onclick="handleFileDownload(event)">Download SSC</a>`
                         : '<span>No file uploaded</span>'}
                 </div>
                 <div class="mb-2">
                     <strong class="w-48 inline-block text-gray-600">Intermediate Document:</strong>
                     ${data.intermediate_doc_path 
-                        ? `<a href="${BASE_URL}/api/files/${encodeURIComponent(data.intermediate_doc_path)}" class="bg-green-500 text-white px-3 py-1 rounded-lg hover:bg-green-600 transition" download>Download Intermediate</a>`
+                        ? `<a href="${BASE_URL}/api/files/${encodeURIComponent(data.intermediate_doc_path)}" class="bg-green-500 text-white px-3 py-1 rounded-lg hover:bg-green-600 transition" onclick="handleFileDownload(event)">Download Intermediate</a>`
                         : '<span>No file uploaded</span>'}
                 </div>
                 <div class="mb-2">
                     <strong class="w-48 inline-block text-gray-600">Graduation Document:</strong>
                     ${data.graduation_doc_path 
-                        ? `<a href="${BASE_URL}/api/files/${encodeURIComponent(data.graduation_doc_path)}" class="bg-green-500 text-white px-3 py-1 rounded-lg hover:bg-green-600 transition" download>Download Graduation</a>`
+                        ? `<a href="${BASE_URL}/api/files/${encodeURIComponent(data.graduation_doc_path)}" class="bg-green-500 text-white px-3 py-1 rounded-lg hover:bg-green-600 transition" onclick="handleFileDownload(event)">Download Graduation</a>`
                         : '<span>No file uploaded</span>'}
                 </div>
                 <div class="mb-2">
                     <strong class="w-48 inline-block text-gray-600">Additional Document:</strong>
                     ${data.additional_files_path 
-                        ? `<a href="${BASE_URL}/api/files/${encodeURIComponent(data.additional_files_path)}" class="bg-green-500 text-white px-3 py-1 rounded-lg hover:bg-green-600 transition" download>Download Additional</a>`
+                        ? `<a href="${BASE_URL}/api/files/${encodeURIComponent(data.additional_files_path)}" class="bg-green-500 text-white px-3 py-1 rounded-lg hover:bg-green-600 transition" onclick="handleFileDownload(event)">Download Additional</a>`
                         : '<span>No file uploaded</span>'}
                 </div>
                 <div class="mb-2">
                     <strong class="w-48 inline-block text-gray-600">Offer Letter:</strong>
                     ${data.offer_letter_path 
-                        ? `<a href="${BASE_URL}/api/files/${encodeURIComponent(data.offer_letter_path)}" class="bg-green-500 text-white px-3 py-1 rounded-lg hover:bg-green-600 transition" download>Download Offer Letter</a>`
+                        ? `<a href="${BASE_URL}/api/files/${encodeURIComponent(data.offer_letter_path)}" class="bg-green-500 text-white px-3 py-1 rounded-lg hover:bg-green-600 transition" onclick="handleFileDownload(event)">Download Offer Letter</a>`
                         : '<span>No offer letter uploaded</span>'}
                 </div>
             `;
 
             statusSelect.value = data.status || 'Pending';
-            offerLetterSection.style.display = data.status === 'Approved' && !data.offer_letter_path ? 'block' : 'none';
+            offerLetterSection.style.display = data.status === 'Approved' ? 'block' : 'none';
             statusSection.style.display = data.status === 'Pending' ? 'block' : 'none';
+
+            offerLetterSection.innerHTML = `
+                <h3 class="text-lg font-semibold mb-2">Upload Offer Letter</h3>
+                ${data.offer_letter_path ? '<p class="text-yellow-500 mb-2">Note: An offer letter is already uploaded. Uploading a new one will replace it.</p>' : ''}
+                <input type="file" id="offerLetterInput" accept=".pdf" class="mb-2">
+                <button class="gradient-button text-white px-4 py-2 rounded-lg" onclick="uploadOfferLetter()">Upload</button>
+            `;
+
             document.getElementById('detailsModal').classList.remove('hidden');
         }
 
@@ -570,15 +629,19 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ status })
                 });
+
                 console.log('Update status response status:', response.status, response.statusText);
+
                 if (!response.ok) {
                     const errorText = await response.text();
                     console.error('Update status error response:', errorText);
                     throw new Error(`HTTP ${response.status}: ${errorText}`);
                 }
+
                 const result = await response.json();
                 console.log('Update status response:', result);
                 if (!result.success) throw new Error(result.message);
+
                 Swal.fire({
                     icon: 'success',
                     title: 'Success',
@@ -594,8 +657,8 @@
                     text: error.message.includes('Failed to fetch')
                         ? 'Unable to connect to the server. Please ensure the server is running.'
                         : error.message.includes('CORS')
-                        ? 'CORS error: Please ensure the server allows requests from this origin.'
-                        : error.message
+                        ? 'CORS error: Please check server configuration.'
+                        : 'Failed to update status. Please try again.'
                 });
             }
         }
@@ -603,6 +666,7 @@
         async function uploadOfferLetter() {
             const fileInput = document.getElementById('offerLetterInput');
             const file = fileInput.files[0];
+
             if (!file) {
                 Swal.fire({
                     icon: 'error',
@@ -639,15 +703,19 @@
                     method: 'POST',
                     body: formData
                 });
+
                 console.log('Upload offer letter response status:', response.status, response.statusText);
+
                 if (!response.ok) {
                     const errorText = await response.text();
                     console.error('Upload offer letter error response:', errorText);
                     throw new Error(`HTTP ${response.status}: ${errorText}`);
                 }
+
                 const result = await response.json();
                 console.log('Upload offer letter response:', result);
                 if (!result.success) throw new Error(result.message);
+
                 Swal.fire({
                     icon: 'success',
                     title: 'Success',
@@ -663,8 +731,8 @@
                     text: error.message.includes('Failed to fetch')
                         ? 'Unable to connect to the server. Please ensure the server is running.'
                         : error.message.includes('CORS')
-                        ? 'CORS error: Please ensure the server allows requests from this origin.'
-                        : error.message
+                        ? 'CORS error: Please check server configuration.'
+                        : 'Failed to upload offer letter. Please try again.'
                 });
             }
         }

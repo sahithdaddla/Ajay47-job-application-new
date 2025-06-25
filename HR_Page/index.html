@@ -72,6 +72,19 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+        
+        .truncate-text {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 150px;
+            display: inline-block;
+        }
+        
+        .compact-table td, .compact-table th {
+            padding: 0.5rem;
+            font-size: 0.875rem;
+        }
     </style>
 </head>
 <body class="bg-gray-100 min-h-screen">
@@ -125,18 +138,16 @@
         <div id="pendingSection" class="dashboard bg-white p-6 rounded-lg shadow-md hidden fade-in">
             <h2 class="text-xl font-semibold mb-4"><i class="fas fa-briefcase mr-2"></i>Pending Applications</h2>
             <div class="table-container">
-                <table class="w-full border-collapse">
+                <table class="w-full border-collapse compact-table">
                     <thead>
                         <tr class="bg-gray-50">
-                            <th class="p-3 text-left text-gray-600 font-semibold">Reference ID</th>
-                            <th class="p-3 text-left text-gray-600 font-semibold">Full Name</th>
-                            <th class="p-3 text-left text-gray-600 font-semibold">Email</th>
-                            <th class="p-3 text-left text-gray-600 font-semibold">Mobile Number</th>
-                            <th class="p-3 text-left text-gray-600 font-semibold">Department</th>
-                            <th class="p-3 text-left text-gray-600 font-semibold">Job Role</th>
-                            <th class="p-3 text-left text-gray-600 font-semibold">Status</th>
-                            <th class="p-3 text-left text-gray-600 font-semibold">Applied On</th>
-                            <th class="p-3 text-left text-gray-600 font-semibold">Actions</th>
+                            <th class="p-2 text-left text-gray-600 font-semibold">Ref ID</th>
+                            <th class="p-2 text-left text-gray-600 font-semibold">Name</th>
+                            <th class="p-2 text-left text-gray-600 font-semibold">Email</th>
+                            <th class="p-2 text-left text-gray-600 font-semibold">Job Role</th>
+                            <th class="p-2 text-left text-gray-600 font-semibold">Status</th>
+                            <th class="p-2 text-left text-gray-600 font-semibold">Applied Date</th>
+                            <th class="p-2 text-left text-gray-600 font-semibold">Actions</th>
                         </tr>
                     </thead>
                     <tbody id="pendingApplicationsBody"></tbody>
@@ -147,19 +158,17 @@
         <div id="approvedSection" class="dashboard bg-white p-6 rounded-lg shadow-md hidden fade-in">
             <h2 class="text-xl font-semibold mb-4"><i class="fas fa-check-circle mr-2"></i>Approved Applications</h2>
             <div class="table-container">
-                <table class="w-full border-collapse">
+                <table class="w-full border-collapse compact-table">
                     <thead>
                         <tr class="bg-gray-50">
-                            <th class="p-3 text-left text-gray-600 font-semibold">Reference ID</th>
-                            <th class="p-3 text-left text-gray-600 font-semibold">Full Name</th>
-                            <th class="p-3 text-left text-gray-600 font-semibold">Email</th>
-                            <th class="p-3 text-left text-gray-600 font-semibold">Mobile Number</th>
-                            <th class="p-3 text-left text-gray-600 font-semibold">Department</th>
-                            <th class="p-3 text-left text-gray-600 font-semibold">Job Role</th>
-                            <th class="p-3 text-left text-gray-600 font-semibold">Status</th>
-                            <th class="p-3 text-left text-gray-600 font-semibold">Offer Letter</th>
-                            <th class="p-3 text-left text-gray-600 font-semibold">Applied On</th>
-                            <th class="p-3 text-left text-gray-600 font-semibold">Actions</th>
+                            <th class="p-2 text-left text-gray-600 font-semibold">Ref ID</th>
+                            <th class="p-2 text-left text-gray-600 font-semibold">Name</th>
+                            <th class="p-2 text-left text-gray-600 font-semibold">Email</th>
+                            <th class="p-2 text-left text-gray-600 font-semibold">Job Role</th>
+                            <th class="p-2 text-left text-gray-600 font-semibold">Status</th>
+                            <th class="p-2 text-left text-gray-600 font-semibold">Offer Letter</th>
+                            <th class="p-2 text-left text-gray-600 font-semibold">Applied Date</th>
+                            <th class="p-2 text-left text-gray-600 font-semibold">Actions</th>
                         </tr>
                     </thead>
                     <tbody id="approvedApplicationsBody"></tbody>
@@ -170,18 +179,16 @@
         <div id="rejectedSection" class="dashboard bg-white p-6 rounded-lg shadow-md hidden fade-in">
             <h2 class="text-xl font-semibold mb-4"><i class="fas fa-times-circle mr-2"></i>Rejected Applications</h2>
             <div class="table-container">
-                <table class="w-full border-collapse">
+                <table class="w-full border-collapse compact-table">
                     <thead>
                         <tr class="bg-gray-50">
-                            <th class="p-3 text-left text-gray-600 font-semibold">Reference ID</th>
-                            <th class="p-3 text-left text-gray-600 font-semibold">Full Name</th>
-                            <th class="p-3 text-left text-gray-600 font-semibold">Email</th>
-                            <th class="p-3 text-left text-gray-600 font-semibold">Mobile Number</th>
-                            <th class="p-3 text-left text-gray-600 font-semibold">Department</th>
-                            <th class="p-3 text-left text-gray-600 font-semibold">Job Role</th>
-                            <th class="p-3 text-left text-gray-600 font-semibold">Status</th>
-                            <th class="p-3 text-left text-gray-600 font-semibold">Applied On</th>
-                            <th class="p-3 text-left text-gray-600 font-semibold">Actions</th>
+                            <th class="p-2 text-left text-gray-600 font-semibold">Ref ID</th>
+                            <th class="p-2 text-left text-gray-600 font-semibold">Name</th>
+                            <th class="p-2 text-left text-gray-600 font-semibold">Email</th>
+                            <th class="p-2 text-left text-gray-600 font-semibold">Job Role</th>
+                            <th class="p-2 text-left text-gray-600 font-semibold">Status</th>
+                            <th class="p-2 text-left text-gray-600 font-semibold">Applied Date</th>
+                            <th class="p-2 text-left text-gray-600 font-semibold">Actions</th>
                         </tr>
                     </thead>
                     <tbody id="rejectedApplicationsBody"></tbody>
@@ -198,27 +205,29 @@
             <div id="applicationDetails" class="mb-4"></div>
             <div class="download-section">
                 <h3 class="text-lg font-semibold mb-2">Documents</h3>
-                <div id="documentLinks" class="mb-4"></div>
+                <div id="documentLinks" class="mb-4 grid grid-cols-1 gap-2"></div>
             </div>
             <div class="status-section" id="statusSection">
                 <h3 class="text-lg font-semibold mb-2">Update Status</h3>
-                <select id="statusSelect" class="p-2 border rounded-lg">
-                    <option value="Pending">Pending</option>
-                    <option value="Approved">Approved</option>
-                    <option value="Rejected">Rejected</option>
-                </select>
-                <button class="gradient-button text-white px-4 py-2 rounded-lg ml-4" onclick="confirmStatusUpdate()">Update</button>
+                <div class="flex items-center">
+                    <select id="statusSelect" class="p-2 border rounded-lg flex-1">
+                        <option value="Pending">Pending</option>
+                        <option value="Approved">Approved</option>
+                        <option value="Rejected">Rejected</option>
+                    </select>
+                    <button class="gradient-button text-white px-4 py-2 rounded-lg ml-4" onclick="confirmStatusUpdate()">Update</button>
+                </div>
             </div>
             <div class="offer-letter-section mt-4" id="offerLetterUploadSection" style="display: none;">
                 <h3 class="text-lg font-semibold mb-2">Upload Offer Letter</h3>
-                <input type="file" id="offerLetterInput" accept=".pdf" class="mb-2">
-                <button class="gradient-button text-white px-4 py-2 rounded-lg" onclick="uploadOfferLetter()">Upload</button>
+                <input type="file" id="offerLetterInput" accept=".pdf" class="mb-2 w-full">
+                <button class="gradient-button text-white px-4 py-2 rounded-lg w-full" onclick="uploadOfferLetter()">Upload</button>
             </div>
         </div>
     </div>
 
     <script>
-        const BASE_URL = window.location.hostname === 'localhost' ? 'http://localhost:3221' : 'http://3.88.203.125:3221';
+        const BASE_URL = window.location.hostname === 'localhost' ? 'http://localhost:3409' : 'http://44.223.23.145:3409';
         let currentApplicationId = null;
         let applicationsData = [];
         let currentSection = 'pending';
@@ -354,9 +363,9 @@
             rejectedTbody.innerHTML = '';
 
             if (!applications.length) {
-                const noDataRowPending = '<tr><td colspan="9" class="p-3 text-center text-gray-500">No applications found.</td></tr>';
-                const noDataRowApproved = '<tr><td colspan="10" class="p-3 text-center text-gray-500">No applications found.</td></tr>';
-                const noDataRowRejected = '<tr><td colspan="9" class="p-3 text-center text-gray-500">No applications found.</td></tr>';
+                const noDataRowPending = '<tr><td colspan="7" class="p-3 text-center text-gray-500">No applications found.</td></tr>';
+                const noDataRowApproved = '<tr><td colspan="8" class="p-3 text-center text-gray-500">No applications found.</td></tr>';
+                const noDataRowRejected = '<tr><td colspan="7" class="p-3 text-center text-gray-500">No applications found.</td></tr>';
                 pendingTbody.innerHTML = noDataRowPending;
                 approvedTbody.innerHTML = noDataRowApproved;
                 rejectedTbody.innerHTML = noDataRowRejected;
@@ -366,47 +375,47 @@
             applications.forEach(app => {
                 console.log(`Rendering application ID ${app.id}: status=${app.status || 'N/A'}`);
                 const row = document.createElement('tr');
-                row.className = 'border-b';
+                row.className = 'border-b hover:bg-gray-50';
+
+                const truncatedName = app.full_name && app.full_name.length > 30 
+                    ? `<span class="truncate-text" title="${app.full_name}">${app.full_name.substring(0, 27)}...</span>`
+                    : displayValue(app.full_name);
 
                 const baseRowContent = `
-                    <td class="p-3">${displayValue(app.reference_id)}</td>
-                    <td class="p-3">${displayValue(app.full_name)}</td>
-                    <td class="p-3">${displayValue(app.email)}</td>
-                    <td class="p-3">${displayValue(app.mobile_number)}</td>
-                    <td class="p-3">${displayValue(app.department)}</td>
-                    <td class="p-3">${displayValue(app.job_role)}</td>
-                    <td class="p-3">
+                    <td class="p-2">${displayValue(app.reference_id)}</td>
+                    <td class="p-2">${truncatedName}</td>
+                    <td class="p-2">${displayValue(app.email)}</td>
+                    <td class="p-2">${displayValue(app.job_role)}</td>
+                    <td class="p-2">
                         <span class="${
                             app.status === 'Pending' ? 'text-yellow-500' :
                             app.status === 'Approved' ? 'text-green-500' :
                             'text-red-500'
                         } font-medium">${displayValue(app.status)}</span>
                     </td>
-                    <td class="p-3">${formatDateTime(app.created_at)}</td>
-                    <td class="p-3">
-                        <button class="gradient-button text-white px-3 py-1 rounded-lg" onclick="viewDetails(${app.id})">View Details</button>
+                    <td class="p-2">${formatDate(app.created_at)}</td>
+                    <td class="p-2">
+                        <button class="gradient-button text-white px-3 py-1 rounded-lg text-sm" onclick="viewDetails(${app.id})">View Details</button>
                     </td>
                 `;
 
                 if (app.status === 'Approved') {
                     row.innerHTML = `
-                        <td class="p-3">${displayValue(app.reference_id)}</td>
-                        <td class="p-3">${displayValue(app.full_name)}</td>
-                        <td class="p-3">${displayValue(app.email)}</td>
-                        <td class="p-3">${displayValue(app.mobile_number)}</td>
-                        <td class="p-3">${displayValue(app.department)}</td>
-                        <td class="p-3">${displayValue(app.job_role)}</td>
-                        <td class="p-3">
+                        <td class="p-2">${displayValue(app.reference_id)}</td>
+                        <td class="p-2">${truncatedName}</td>
+                        <td class="p-2">${displayValue(app.email)}</td>
+                        <td class="p-2">${displayValue(app.job_role)}</td>
+                        <td class="p-2">
                             <span class="text-green-500 font-medium">${displayValue(app.status)}</span>
                         </td>
-                        <td class="p-3">
+                        <td class="p-2">
                             ${app.offer_letter_path 
                                 ? '<span class="text-blue-500 font-medium">Provided</span>' 
                                 : '<span class="text-gray-500">Not Provided</span>'}
                         </td>
-                        <td class="p-3">${formatDateTime(app.created_at)}</td>
-                        <td class="p-3">
-                            <button class="gradient-button text-white px-3 py-1 rounded-lg" onclick="viewDetails(${app.id})">View Details</button>
+                        <td class="p-2">${formatDate(app.created_at)}</td>
+                        <td class="p-2">
+                            <button class="gradient-button text-white px-3 py-1 rounded-lg text-sm" onclick="viewDetails(${app.id})">View Details</button>
                         </td>
                     `;
                     approvedTbody.appendChild(row);
@@ -548,32 +557,32 @@
             `;
 
             documentsDiv.innerHTML = `
-                <div class="mb-2">
-                    <strong class="w-48 inline-block text-gray-600">SSC Document:</strong>
+                <div class="flex items-center">
+                    <strong class="w-48 text-gray-600">SSC Document:</strong>
                     ${data.ssc_doc_path 
                         ? `<a href="${BASE_URL}/api/files/${encodeURIComponent(data.ssc_doc_path)}" class="bg-green-500 text-white px-3 py-1 rounded-lg hover:bg-green-600 transition" onclick="handleFileDownload(event)">Download SSC</a>`
                         : '<span>No file uploaded</span>'}
                 </div>
-                <div class="mb-2">
-                    <strong class="w-48 inline-block text-gray-600">Intermediate Document:</strong>
+                <div class="flex items-center">
+                    <strong class="w-48 text-gray-600">Intermediate Document:</strong>
                     ${data.intermediate_doc_path 
                         ? `<a href="${BASE_URL}/api/files/${encodeURIComponent(data.intermediate_doc_path)}" class="bg-green-500 text-white px-3 py-1 rounded-lg hover:bg-green-600 transition" onclick="handleFileDownload(event)">Download Intermediate</a>`
                         : '<span>No file uploaded</span>'}
                 </div>
-                <div class="mb-2">
-                    <strong class="w-48 inline-block text-gray-600">Graduation Document:</strong>
+                <div class="flex items-center">
+                    <strong class="w-48 text-gray-600">Graduation Document:</strong>
                     ${data.graduation_doc_path 
                         ? `<a href="${BASE_URL}/api/files/${encodeURIComponent(data.graduation_doc_path)}" class="bg-green-500 text-white px-3 py-1 rounded-lg hover:bg-green-600 transition" onclick="handleFileDownload(event)">Download Graduation</a>`
                         : '<span>No file uploaded</span>'}
                 </div>
-                <div class="mb-2">
-                    <strong class="w-48 inline-block text-gray-600">Additional Document:</strong>
+                <div class="flex items-center">
+                    <strong class="w-48 text-gray-600">Additional Document:</strong>
                     ${data.additional_files_path 
                         ? `<a href="${BASE_URL}/api/files/${encodeURIComponent(data.additional_files_path)}" class="bg-green-500 text-white px-3 py-1 rounded-lg hover:bg-green-600 transition" onclick="handleFileDownload(event)">Download Additional</a>`
                         : '<span>No file uploaded</span>'}
                 </div>
-                <div class="mb-2">
-                    <strong class="w-48 inline-block text-gray-600">Offer Letter:</strong>
+                <div class="flex items-center">
+                    <strong class="w-48 text-gray-600">Offer Letter:</strong>
                     ${data.offer_letter_path 
                         ? `<a href="${BASE_URL}/api/files/${encodeURIComponent(data.offer_letter_path)}" class="bg-green-500 text-white px-3 py-1 rounded-lg hover:bg-green-600 transition" onclick="handleFileDownload(event)">Download Offer Letter</a>`
                         : '<span>No offer letter uploaded</span>'}
@@ -587,8 +596,8 @@
             offerLetterSection.innerHTML = `
                 <h3 class="text-lg font-semibold mb-2">Upload Offer Letter</h3>
                 ${data.offer_letter_path ? '<p class="text-yellow-500 mb-2">Note: An offer letter is already uploaded. Uploading a new one will replace it.</p>' : ''}
-                <input type="file" id="offerLetterInput" accept=".pdf" class="mb-2">
-                <button class="gradient-button text-white px-4 py-2 rounded-lg" onclick="uploadOfferLetter()">Upload</button>
+                <input type="file" id="offerLetterInput" accept=".pdf" class="mb-2 w-full">
+                <button class="gradient-button text-white px-4 py-2 rounded-lg w-full" onclick="uploadOfferLetter()">Upload</button>
             `;
 
             document.getElementById('detailsModal').classList.remove('hidden');

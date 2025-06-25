@@ -9,7 +9,7 @@ services:
       POSTGRES_PASSWORD: admin123
       POSTGRES_DB: new_employee_db
     ports:
-      - "5999:5432"
+      - "5410:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     restart: unless-stopped
@@ -19,7 +19,7 @@ services:
     build:
       context: ./Backend
     ports:
-      - "3221:3221"
+      - "3409:3409"
     environment:
       PG_HOST: postgres
       DB_USER: postgres
@@ -36,7 +36,7 @@ services:
     build:
       context: ./Frontend
     ports:
-      - "7771:80"
+      - "8031:80"
     depends_on:
       - backend
     restart: unless-stopped
@@ -46,7 +46,7 @@ services:
     build:
       context: ./HR_Page
     ports:
-      - "7772:80"
+      - "8032:80"
     depends_on:
       - backend
     restart: unless-stopped
@@ -56,7 +56,7 @@ services:
     build:
       context: ./Offer_letter
     ports:
-      - "7773:80"
+      - "8033:80"
     depends_on:
       - backend
     restart: unless-stopped

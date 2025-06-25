@@ -3,88 +3,448 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Download Offer Letter</title>
+    <title>Career Portal | Offer Letter</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <link rel="icon" type="image/png" href="https://favicon.io/favicon-16x16.png">
     <style>
+        :root {
+            --primary: #7e22ce;
+            --primary-dark: #6b21a8;
+            --secondary: #10b981;
+            --dark: #1e293b;
+            --light: #f8fafc;
+            --gray: #94a3b8;
+            --purple: #8b5cf6;
+            --pink: #ec4899;
+            --orange: #f97316;
+            --blue: #3b82f6;
+            --teal: #14b8a6;
+        }
+
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: Arial, Helvetica, sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
         }
 
         body {
-            background-color: #F3F4F6;
-            font-size: 16px;
-            line-height: 1.5;
+            background-color: #ffffff;
+            color: var(--dark);
+            line-height: 1.6;
+            position: relative;
+            overflow-x: hidden;
         }
 
-        .header {
-            position: relative;
-            background: linear-gradient(to right, #7C3AED, #3B82F6);
-            color: #FFFFFF;
-            padding: 2rem;
+        /* Hero section */
+        .hero {
+            background: linear-gradient(135deg, #7e22ce, #3b82f6);
+            color: white;
+            padding: 5rem 2rem;
             text-align: center;
-            border-bottom-left-radius: 1.5rem;
-            border-bottom-right-radius: 1.5rem;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            position: relative;
             overflow: hidden;
         }
 
-        .header .circle-container {
+        .hero::before {
+            content: '';
             position: absolute;
             top: 0;
             left: 0;
-            right: 0;
-            bottom: 0;
-            overflow: hidden;
-            opacity: 0.2;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxkZWZzPjxwYXR0ZXJuIGlkPSJwYXR0ZXJuIiB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHBhdHRlcm5Vbml0cz0idXNlclNwYWNlT25Vc2UiIHBhdHRlcm5UcmFuc2Zvcm09InJvdGF0ZSg0NSkiPjxyZWN0IHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCIgZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwwLjA1KSIvPjwvcGF0dGVybj48L2RlZnM+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNwYXR0ZXJuKSIvPjwvc3ZnPg==');
         }
 
-        .circle {
-            position: absolute;
-            background-color: #FFFFFF;
-            border-radius: 50%;
-            animation: pulse 10s infinite linear;
-        }
-
-        .circle:nth-child(1) {
-            width: 12rem;
-            height: 12rem;
-            top: 2.5rem;
-            left: 5rem;
-        }
-
-        .circle:nth-child(2) {
-            width: 16rem;
-            height: 16rem;
-            top: 10rem;
-            right: 5rem;
-        }
-
-        .header h1 {
-            font-size: 2.25rem;
-            font-weight: bold;
+        .hero-content {
+            max-width: 1200px;
+            margin: 0 auto;
             position: relative;
-            z-index: 10;
+            z-index: 2;
         }
 
-        .header p {
-            font-size: 1.125rem;
-            margin-top: 0.5rem;
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            font-weight: 800;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        /* Floating cards container */
+        .cards-container {
+            max-width: 1200px;
+            margin: -3rem auto 3rem;
+            padding: 0 2rem;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 2rem;
             position: relative;
-            z-index: 10;
+            z-index: 3;
         }
 
-        .container {
-            max-width: 600px;
-            margin: 2rem auto;
+        .card {
+            background: white;
+            border-radius: 16px;
             padding: 2rem;
-            background-color: #FFFFFF;
-            border-radius: 1rem;
-            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            flex: 1 1 250px;
+            max-width: 280px;
+            transform: perspective(1000px) translateZ(0);
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, var(--primary), var(--purple));
+        }
+
+        .card:hover {
+            transform: perspective(1000px) translateZ(20px) scale(1.05);
+            box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.2);
+            z-index: 10;
+        }
+
+        .card:hover::after {
+            content: '';
+            position: absolute;
+            bottom: -30px;
+            left: 0;
+            width: 100%;
+            height: 30px;
+            background: linear-gradient(
+                to bottom,
+                rgba(0, 0, 0, 0.1),
+                rgba(0, 0, 0, 0)
+            );
+            filter: blur(10px);
+            transform: scaleY(1.5);
+            transition: all 0.3s ease;
+        }
+
+        .card-icon {
+            width: 60px;
+            height: 60px;
+            background: var(--primary);
+            color: white;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 10px 20px -5px rgba(99, 102, 241, 0.3);
+        }
+
+        .card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--dark);
+        }
+
+        .card p {
+            color: var(--gray);
+            margin-bottom: 1.5rem;
+        }
+
+        .card-link {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s;
+        }
+
+        .card-link:hover {
+            color: var(--primary-dark);
+            gap: 1rem;
+        }
+
+        /* Application Journey */
+        .journey-section {
+            max-width: 1200px;
+            margin: 4rem auto;
+            padding: 0 2rem;
+            background: linear-gradient(135deg, rgba(123, 31, 162, 0.05), rgba(59, 130, 246, 0.05));
+            border-radius: 16px;
+            padding: 3rem 2rem;
+        }
+
+        .journey-title {
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            color: var(--dark);
+            background: linear-gradient(90deg, var(--primary), var(--blue));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .journey-steps {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            justify-content: center;
+        }
+
+        .journey-step {
+            flex: 1 1 180px;
+            max-width: 200px;
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            text-align: center;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .journey-step::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--teal), var(--blue));
+        }
+
+        .journey-step.active::before {
+            background: linear-gradient(90deg, var(--secondary), var(--teal));
+        }
+
+        .journey-step.completed::before {
+            background: linear-gradient(90deg, var(--purple), var(--pink));
+        }
+
+        .step-emoji {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .step-number {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: white;
+            border: 2px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            margin: 0 auto 0.5rem;
+            transition: all 0.3s;
+        }
+
+        .journey-step.active .step-number {
+            border-color: var(--teal);
+            background: var(--teal);
+            color: white;
+        }
+
+        .journey-step.completed .step-number {
+            border-color: var(--purple);
+            background: var(--purple);
+            color: white;
+        }
+
+        .step-label {
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .step-status {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+
+        /* Offer letter section */
+        .offer-section {
+            max-width: 800px;
+            margin: 4rem auto;
+            padding: 3rem 2rem;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            background: linear-gradient(135deg, rgba(126, 34, 206, 0.03), rgba(59, 130, 246, 0.03));
+        }
+
+        .offer-section h2 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: var(--dark);
+            background: linear-gradient(90deg, var(--primary), var(--blue));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .offer-section p {
+            color: var(--gray);
+            margin-bottom: 2rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .offer-card {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+            border: 2px dashed var(--gray);
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9));
+        }
+
+        .offer-card:hover {
+            border-color: var(--primary);
+            background: rgba(126, 34, 206, 0.05);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px -10px rgba(126, 34, 206, 0.2);
+        }
+
+        .offer-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--dark);
+        }
+
+        .offer-card p {
+            color: var(--gray);
+            margin-bottom: 1.5rem;
+        }
+
+        /* Button with reflection effect */
+        .reflective-btn {
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s;
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            font-size: 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            box-shadow: 0 4px 6px rgba(126, 34, 206, 0.1);
+        }
+
+        .reflective-btn::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                to bottom right,
+                rgba(255, 255, 255, 0.4),
+                rgba(255, 255, 255, 0)
+            );
+            transform: rotate(30deg);
+            transition: all 0.5s;
+            opacity: 0;
+        }
+
+        .reflective-btn:hover::after {
+            left: 100%;
+            opacity: 1;
+        }
+
+        .reflective-btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(126, 34, 206, 0.2);
+        }
+
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 500px;
+            padding: 2rem;
+            position: relative;
+            animation: modalFadeIn 0.3s ease-out;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            z-index: 1002;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.95));
+        }
+
+        @keyframes modalFadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--gray);
+            background: none;
+            border: none;
+            transition: color 0.2s;
+        }
+
+        .close-modal:hover {
+            color: var(--dark);
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
         }
 
         .form-group {
@@ -93,237 +453,692 @@
 
         .form-group label {
             display: block;
-            font-weight: 600;
-            color: #4B5563;
             margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
         .form-group input {
             width: 100%;
-            padding: 0.75rem;
-            border: 1px solid #D1D5DB;
-            border-radius: 0.5rem;
+            padding: 0.8rem 1rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
             font-size: 1rem;
+            transition: all 0.3s;
         }
 
-        .submit-button {
-            padding: 0.75rem 1.5rem;
-            border: none;
-            border-radius: 0.5rem;
-            font-size: 1rem;
-            cursor: pointer;
-            background-color: #3B82F6;
-            color: #FFFFFF;
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(126, 34, 206, 0.2);
+        }
+
+        .submit-btn {
             width: 100%;
-            transition: background-color 0.3s;
-        }
-
-        .submit-button:hover {
-            background-color: #2563EB;
-        }
-
-        .result-section {
-            margin-top: 2rem;
-            text-align: center;
-        }
-
-        .result-section .no-offer {
-            color: #EF4444;
-            font-size: 1.25rem;
-            font-weight: 600;
-        }
-
-        .result-section .no-offer i {
-            margin-right: 0.5rem;
-        }
-
-        .button-group {
-            display: flex;
-            justify-content: center;
-            gap: 1rem;
-            margin-top: 1rem;
-        }
-
-        .download-button {
-            padding: 0.75rem 1.5rem;
+            padding: 0.8rem;
+            background: var(--primary);
+            color: white;
             border: none;
-            border-radius: 0.5rem;
+            border-radius: 8px;
             font-size: 1rem;
+            font-weight: 500;
             cursor: pointer;
-            color: #FFFFFF;
-            background-color: #10B981;
-            transition: background-color 0.3s;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            position: relative;
+            overflow: hidden;
         }
 
-        .download-button:hover {
-            background-color: #059669;
+        .submit-btn::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                to bottom right,
+                rgba(255, 255, 255, 0.3),
+                rgba(255, 255, 255, 0)
+            );
+            transform: rotate(30deg);
+            transition: all 0.3s;
         }
 
-        @keyframes pulse {
-            0% { transform: translate(0, 0); }
-            50% { transform: translate(-50px, -50px); }
-            100% { transform: translate(0, 0); }
+        .submit-btn:hover::after {
+            left: 100%;
         }
 
+        .submit-btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(126, 34, 206, 0.3);
+        }
+
+        .modal-result {
+            text-align: center;
+            margin-top: 1.5rem;
+        }
+
+        .success-message {
+            color: var(--secondary);
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .success-message i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            display: block;
+            color: var(--secondary);
+        }
+
+        .waiting-message {
+            color: #f59e0b;
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .waiting-message i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            display: block;
+            color: #f59e0b;
+        }
+
+        .error-message {
+            color: #ef4444;
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .error-message i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            display: block;
+            color: #ef4444;
+        }
+
+        .download-offer-btn {
+            background: var(--secondary);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            margin: 0 auto;
+            box-shadow: 0 5px 15px rgba(16, 185, 129, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .download-offer-btn::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                to bottom right,
+                rgba(255, 255, 255, 0.3),
+                rgba(255, 255, 255, 0)
+            );
+            transform: rotate(30deg);
+            transition: all 0.3s;
+        }
+
+        .download-offer-btn:hover::after {
+            left: 100%;
+        }
+
+        .download-offer-btn:hover {
+            background: #059669;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(16, 185, 129, 0.4);
+        }
+
+        /* Firework styles */
+        .firework {
+            position: fixed;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 1001;
+            animation: explode 1s ease-out forwards;
+        }
+
+        @keyframes explode {
+            to {
+                transform: translate(var(--x), var(--y));
+                opacity: 0;
+            }
+        }
+
+        /* Confetti effect */
+        .confetti {
+            position: fixed;
+            width: 12px;
+            height: 12px;
+            opacity: 0;
+            z-index: 9999;
+            animation: confettiFall 5s linear forwards;
+        }
+
+        @keyframes confettiFall {
+            0% {
+                transform: translateY(-100vh) rotate(0deg) scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(720deg) scale(0.5);
+                opacity: 0;
+            }
+        }
+
+        /* Result modal */
+        .result-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(5px);
+        }
+
+        .result-modal-content {
+            background: white;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 500px;
+            padding: 2rem;
+            position: relative;
+            animation: modalFadeIn 0.3s ease-out;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            z-index: 1002;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            text-align: center;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.95));
+        }
+
+        /* Responsive styles */
         @media (max-width: 768px) {
-            .header h1 {
-                font-size: 1.875rem;
+            .hero h1 {
+                font-size: 2.2rem;
             }
 
-            .header p {
+            .hero p {
                 font-size: 1rem;
             }
 
-            .container {
-                padding: 1.5rem;
+            .cards-container {
+                grid-template-columns: 1fr;
             }
 
-            .button-group {
+            .journey-steps {
                 flex-direction: column;
+                align-items: center;
             }
 
-            .download-button {
+            .journey-step {
+                max-width: 100%;
                 width: 100%;
             }
         }
     </style>
 </head>
 <body>
-    <div class="header">
-        <div class="circle-container">
-            <div class="circle"></div>
-            <div class="circle"></div>
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Your Dream Career Starts Here</h1>
+            <p>Join our innovative team and unlock your potential with exciting opportunities and growth</p>
         </div>
-        <h1>Access Offer Letter</h1>
-        <p>Enter your details to download your offer letter</p>
+    </section>
+
+    <!-- Floating cards -->
+    <div class="cards-container">
+        <div class="card">
+            <div class="card-icon" style="background: linear-gradient(135deg, var(--primary), var(--purple));">
+                <i class="fas fa-bolt"></i>
+            </div>
+            <h3>Fast Hiring</h3>
+            <p>Our streamlined process gets you from application to offer in record time.</p>
+            <a href="#" class="card-link">
+                Learn more <i class="fas fa-arrow-right"></i>
+            </a>
+        </div>
+
+        <div class="card">
+            <div class="card-icon" style="background: linear-gradient(135deg, var(--secondary), #34d399);">
+                <i class="fas fa-chart-line"></i>
+            </div>
+            <h3>Career Growth</h3>
+            <p>Continuous learning opportunities and clear promotion paths.</p>
+            <a href="#" class="card-link">
+                Learn more <i class="fas fa-arrow-right"></i>
+            </a>
+        </div>
+
+        <div class="card">
+            <div class="card-icon" style="background: linear-gradient(135deg, var(--purple), var(--pink));">
+                <i class="fas fa-heart"></i>
+            </div>
+            <h3>Great Benefits</h3>
+            <p>Comprehensive health coverage and wellness programs.</p>
+            <a href="#" class="card-link">
+                Learn more <i class="fas fa-arrow-right"></i>
+            </a>
+        </div>
+
+        <div class="card">
+            <div class="card-icon" style="background: linear-gradient(135deg, var(--orange), #f59e0b);">
+                <i class="fas fa-users"></i>
+            </div>
+            <h3>Awesome Culture</h3>
+            <p>Collaborative environment with fun team events and activities.</p>
+            <a href="#" class="card-link">
+                Learn more <i class="fas fa-arrow-right"></i>
+            </a>
+        </div>
     </div>
 
-    <div class="container">
-        <div class="form-group">
-            <label for="referenceId">Reference ID</label>
-            <input type="text" id="referenceId" placeholder="e.g., REF-12345678" autofocus>
+    <!-- Application Journey -->
+    <section class="journey-section">
+        <h2 class="journey-title">Your Application Journey</h2>
+        <div class="journey-steps">
+            <div class="journey-step completed">
+                <span class="step-emoji">📝</span>
+                <div class="step-number">1</div>
+                <div class="step-label">Application</div>
+                <div class="step-status">Completed</div>
+            </div>
+            
+            <div class="journey-step completed">
+                <span class="step-emoji">💬</span>
+                <div class="step-number">2</div>
+                <div class="step-label">Interview</div>
+                <div class="step-status">Completed</div>
+            </div>
+            
+            <div class="journey-step active">
+                <span class="step-emoji">📜</span>
+                <div class="step-number">3</div>
+                <div class="step-label">Offer</div>
+                <div class="step-status">In Progress</div>
+            </div>
+            
+            <div class="journey-step">
+                <span class="step-emoji">🏢</span>
+                <div class="step-number">4</div>
+                <div class="step-label">Onboarding</div>
+                <div class="step-status">Pending</div>
+            </div>
+            
+            <div class="journey-step">
+                <span class="step-emoji">🚀</span>
+                <div class="step-number">5</div>
+                <div class="step-label">First Day</div>
+                <div class="step-status">Pending</div>
+            </div>
         </div>
-        <div class="form-group">
-            <label for="email">Email</label>
-            <input type="email" id="email" placeholder="e.g., example@gmail.com">
-        </div>
-        <button class="submit-button" onclick="checkOfferLetter()">Check Offer Letter</button>
+    </section>
 
-        <div class="result-section" id="resultSection" style="display: none;">
-            <div id="resultMessage"></div>
-            <div id="buttonGroup" class="button-group"></div>
+    <!-- Offer letter section -->
+    <section class="offer-section">
+        <h2>Ready for Your Offer Letter?</h2>
+        <p>If you've been notified that your offer is ready, you can check its status and download it using the form below.</p>
+        
+        <div class="offer-card">
+            <h3>Get Your Offer Letter</h3>
+            <p>Enter your reference ID and email address to access your personalized offer letter.</p>
+            <button class="reflective-btn" id="openModalBtn2">
+                <i class="fas fa-file-alt"></i> View Offer Details
+            </button>
+        </div>
+    </section>
+
+    <!-- Form Modal -->
+    <div class="modal" id="offerModal">
+        <div class="modal-content">
+            <button class="close-modal" id="closeModalBtn">×</button>
+            <h2 class="modal-title">
+                <i class="fas fa-file-contract"></i> Offer Letter Details
+            </h2>
+            
+            <div class="form-group" id="referenceGroup">
+                <label for="modalReferenceId"><span>🔑</span> Reference ID</label>
+                <input type="text" id="modalReferenceId" placeholder="Enter your reference ID">
+            </div>
+            
+            <div class="form-group" id="emailGroup">
+                <label for="modalEmail"><span>✉️</span> Email Address</label>
+                <input type="email" id="modalEmail" placeholder="Enter your email">
+            </div>
+            
+            <button class="submit-btn reflective-btn" id="checkOfferBtn">
+                <i class="fas fa-search"></i> Check Status
+            </button>
+        </div>
+    </div>
+
+    <!-- Result Modal -->
+    <div class="result-modal" id="resultModal">
+        <div class="result-modal-content">
+            <button class="close-modal" id="closeResultModalBtn">×</button>
+            <div id="resultContent"></div>
+            <button class="download-offer-btn reflective-btn" id="downloadBtn" style="display: none;">
+                <i class="fas fa-download"></i> Download Offer Letter
+            </button>
         </div>
     </div>
 
     <script>
-        const BASE_URL = window.location.hostname === 'localhost' ? 'http://localhost:3221' : 'http://3.88.203.125:3221';
-        const resultSection = document.getElementById('resultSection');
-        const resultMessage = document.getElementById('resultMessage');
-        const buttonGroup = document.getElementById('buttonGroup');
+        const BASE_URL = window.location.hostname === 'localhost' ? 'http://localhost:3409' : 'http://44.223.23.145:3409';
+        
+        // Modal elements
+        const modal = document.getElementById('offerModal');
+        const resultModal = document.getElementById('resultModal');
+        const openModalBtn2 = document.getElementById('openModalBtn2');
+        const closeModalBtn = document.getElementById('closeModalBtn');
+        const closeResultModalBtn = document.getElementById('closeResultModalBtn');
+        const checkOfferBtn = document.getElementById('checkOfferBtn');
+        const resultContent = document.getElementById('resultContent');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const referenceGroup = document.getElementById('referenceGroup');
+        const emailGroup = document.getElementById('emailGroup');
 
-        async function checkOfferLetter() {
-            const referenceId = document.getElementById('referenceId').value.trim();
-            const email = document.getElementById('email').value.trim();
+        // Firework variables
+        let fireworkInterval = null;
+        let offerLetterPath = '';
 
+        // Open modal
+        openModalBtn2.addEventListener('click', openModal);
+        
+        function openModal() {
+            modal.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+            // Reset modal state
+            document.getElementById('modalReferenceId').value = '';
+            document.getElementById('modalEmail').value = '';
+            referenceGroup.style.display = 'block';
+            emailGroup.style.display = 'block';
+            checkOfferBtn.style.display = 'flex';
+            checkOfferBtn.disabled = false;
+            checkOfferBtn.innerHTML = '<i class="fas fa-search"></i> Check Status';
+        }
+        
+        // Close modals
+        closeModalBtn.addEventListener('click', closeModal);
+        closeResultModalBtn.addEventListener('click', closeResultModal);
+        
+        // Close modal when clicking outside
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                closeModal();
+            }
+        });
+        
+        resultModal.addEventListener('click', (e) => {
+            if (e.target === resultModal) {
+                closeResultModal();
+            }
+        });
+        
+        function closeModal() {
+            modal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+            stopFireworks();
+        }
+        
+        function closeResultModal() {
+            resultModal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+            stopFireworks();
+        }
+
+        function stopFireworks() {
+            if (fireworkInterval) {
+                clearInterval(fireworkInterval);
+                fireworkInterval = null;
+                document.querySelectorAll('.firework').forEach(p => p.remove());
+            }
+        }
+
+        // Create firework effect
+        function createFirework(x, y) {
+            const colors = ['#7e22ce', '#8b5cf6', '#3b82f6', '#10b981', '#f97316', '#ec4899'];
+            
+            for (let i = 0; i < 60; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('firework');
+                document.body.appendChild(particle);
+
+                const angle = Math.random() * 2 * Math.PI;
+                const radius = Math.random() * 200 + 100;
+                const dx = Math.cos(angle) * radius;
+                const dy = Math.sin(angle) * radius;
+
+                const color = colors[Math.floor(Math.random() * colors.length)];
+                particle.style.background = color;
+                particle.style.left = `${x}px`;
+                particle.style.top = `${y}px`;
+                particle.style.setProperty('--x', `${dx}px`);
+                particle.style.setProperty('--y', `${dy}px`);
+                particle.style.width = `${Math.random() * 8 + 4}px`;
+                particle.style.height = particle.style.width;
+                particle.style.animationDuration = `${Math.random() * 0.5 + 0.5}s`;
+
+                setTimeout(() => {
+                    particle.remove();
+                }, 1000);
+            }
+        }
+
+        // Start fireworks at random positions (avoiding modal area)
+        function startFireworks() {
+            fireworkInterval = setInterval(() => {
+                // Calculate safe area (not overlapping with modal)
+                const modalRect = resultModal.getBoundingClientRect();
+                const padding = 100;
+                
+                let x, y;
+                let attempts = 0;
+                const maxAttempts = 10;
+                
+                do {
+                    x = Math.random() * (window.innerWidth - 2 * padding) + padding;
+                    y = Math.random() * (window.innerHeight - 2 * padding) + padding;
+                    attempts++;
+                } while (
+                    attempts < maxAttempts && 
+                    x > modalRect.left - padding && 
+                    x < modalRect.right + padding && 
+                    y > modalRect.top - padding && 
+                    y < modalRect.bottom + padding
+                );
+                
+                createFirework(x, y);
+            }, 300);
+        }
+        
+        // Check offer letter
+        checkOfferBtn.addEventListener('click', async () => {
+            const referenceId = document.getElementById('modalReferenceId').value.trim();
+            const email = document.getElementById('modalEmail').value.trim();
+            
             if (!referenceId || !email) {
                 Swal.fire({
                     icon: 'error',
-                    title: 'Missing Input',
-                    text: 'Please enter both Reference ID and Email'
+                    title: 'Missing Information',
+                    text: 'Please enter both Reference ID and Email',
                 });
                 return;
             }
-
+            
+            // Show loading state
+            checkOfferBtn.disabled = true;
+            checkOfferBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Checking...';
+            
             try {
                 const response = await fetch(`${BASE_URL}/api/offer-letter?reference_id=${encodeURIComponent(referenceId)}&email=${encodeURIComponent(email)}`, {
                     method: 'GET',
                     headers: { 'Content-Type': 'application/json' }
                 });
-
-                if (!response.ok) {
-                    const errorText = await response.text();
-                    throw new Error(`HTTP ${response.status}: ${errorText || 'Server error occurred.'}`);
-                }
-
+                
                 const result = await response.json();
-                if (!result.success) {
-                    throw new Error(result.message || 'API returned failure.');
+                
+                if (!response.ok) {
+                    throw new Error(result.message || 'Failed to check offer letter');
                 }
-
-                // Offer letter is available
-                showOfferLetterOptions(result.data.offer_letter_path);
-            } catch (error) {
-                let errorMessage;
-                if (error.message.includes('Failed to fetch')) {
-                    errorMessage = 'Unable to connect to the server. Please ensure the server is running.';
-                } else if (error.message.includes('HTTP 500')) {
-                    errorMessage = 'Server error occurred. Please try again later or contact support.';
-                } else if (error.message.includes('Application not found or not approved')) {
-                    errorMessage = 'Invalid Reference ID or Email, or the application is not approved.';
-                } else if (error.message.includes('Offer letter not found')) {
-                    errorMessage = 'No offer letter available for this application.';
+                
+                // Close form modal
+                closeModal();
+                
+                // Show result modal
+                resultModal.style.display = 'flex';
+                document.body.style.overflow = 'hidden';
+                
+                if (result.success && result.data.offer_letter_path) {
+                    // Offer letter available
+                    offerLetterPath = result.data.offer_letter_path;
+                    resultContent.innerHTML = `
+                        <div class="success-message">
+                            <i class="fas fa-check-circle"></i>
+                            <h3>Congratulations! 🎉</h3>
+                            <div>Your offer letter is ready to download.</div>
+                        </div>
+                    `;
+                    downloadBtn.style.display = 'flex';
+                    
+                    // Start fireworks
+                    startFireworks();
+                    
+                    // Set up download button
+                    downloadBtn.onclick = () => {
+                        downloadOfferLetter(offerLetterPath);
+                    };
                 } else {
-                    errorMessage = error.message;
+                    // No offer letter available
+                    resultContent.innerHTML = `
+                        <div class="waiting-message">
+                            <i class="fas fa-hourglass-half"></i>
+                            <h3>Application Under Review</h3>
+                            <div>We're currently reviewing your application. You'll be notified when your offer is ready.</div>
+                        </div>
+                    `;
+                    downloadBtn.style.display = 'none';
                 }
-
-                showError(errorMessage);
-                console.error('Check offer letter error:', {
-                    message: errorMessage,
-                    stack: error.stack,
-                    url: `${BASE_URL}/api/offer-letter`
-                });
+            } catch (error) {
+                console.error('Error:', error);
+                closeModal();
+                resultModal.style.display = 'flex';
+                resultContent.innerHTML = `
+                    <div class="error-message">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <h3>Application Not Found</h3>
+                        <div>We couldn't find your application details. Please verify your information or contact our support team.</div>
+                    </div>
+                `;
+                downloadBtn.style.display = 'none';
+            } finally {
+                checkOfferBtn.disabled = false;
+                checkOfferBtn.innerHTML = '<i class="fas fa-search"></i> Check Status';
+            }
+        });
+        
+        // Download offer letter
+        async function downloadOfferLetter(offerLetterPath) {
+            try {
+                const url = `${BASE_URL}/api/files/${encodeURIComponent(offerLetterPath)}`;
+                const response = await fetch(url, { method: 'GET' });
+                
+                if (!response.ok) {
+                    throw new Error('Failed to download file');
+                }
+                
+                const blob = await response.blob();
+                const link = document.createElement('a');
+                link.href = window.URL.createObjectURL(blob);
+                link.download = offerLetterPath.split('/').pop();
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                window.URL.revokeObjectURL(link.href);
+                
+                // Show success message
+                resultContent.innerHTML = `
+                    <div class="success-message">
+                        <i class="fas fa-check-circle"></i>
+                        <h3>Download Complete! 🚀</h3>
+                        <div>Your offer letter has been downloaded successfully.</div>
+                    </div>
+                `;
+                
+                // Trigger confetti
+                createConfetti();
+            } catch (error) {
+                console.error('Download error:', error);
+                resultContent.innerHTML = `
+                    <div class="error-message">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <h3>Download Failed</h3>
+                        <div>Failed to download offer letter. Please try again.</div>
+                    </div>
+                `;
             }
         }
-
-        function showOfferLetterOptions(offerLetterPath) {
-            resultSection.style.display = 'block';
-            resultMessage.textContent = '';
-            buttonGroup.innerHTML = '';
-
-            const downloadButton = document.createElement('button');
-            downloadButton.className = 'download-button';
-            downloadButton.textContent = 'Download Offer Letter';
-            downloadButton.onclick = () => handleDownload(offerLetterPath);
-
-            buttonGroup.appendChild(downloadButton);
-        }
-
-        function handleDownload(offerLetterPath) {
-            const url = `${BASE_URL}/api/files/${encodeURIComponent(offerLetterPath)}`;
-            fetch(url, { method: 'GET' })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error(`Failed to download file: ${response.statusText}`);
+        
+        // Create confetti effect
+        function createConfetti() {
+            const colors = ['#7e22ce', '#8b5cf6', '#3b82f6', '#10b981', '#f97316', '#ec4899'];
+            
+            for (let i = 0; i < 200; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.left = Math.random() * 100 + 'vw';
+                    confetti.style.width = Math.random() * 12 + 8 + 'px';
+                    confetti.style.height = Math.random() * 12 + 8 + 'px';
+                    confetti.style.animationDuration = Math.random() * 3 + 2 + 's';
+                    confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
+                    
+                    // Random shape
+                    if (Math.random() > 0.5) {
+                        confetti.style.borderRadius = '50%';
+                    } else {
+                        confetti.style.borderRadius = '0';
                     }
-                    return response.blob();
-                })
-                .then(blob => {
-                    const link = document.createElement('a');
-                    link.href = window.URL.createObjectURL(blob);
-                    link.download = offerLetterPath.split('/').pop();
-                    document.body.appendChild(link);
-                    link.click();
-                    document.body.removeChild(link);
-                    window.URL.revokeObjectURL(link.href);
-                })
-                .catch(error => {
-                    console.error('Download error:', error);
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Download Error',
-                        text: error.message.includes('Failed to fetch')
-                            ? 'Unable to connect to the server. Please ensure the server is running.'
-                            : 'Failed to download the offer letter. It may not exist or the server is unavailable.'
-                    });
-                });
+                    
+                    document.body.appendChild(confetti);
+                    
+                    // Remove confetti after animation
+                    setTimeout(() => {
+                        confetti.remove();
+                    }, 5000);
+                }, i * 20);
+            }
         }
-
-        function showError(error) {
-            resultSection.style.display = 'block';
-            resultMessage.innerHTML = `<div class="no-offer"><i class="fas fa-exclamation-circle"></i> <span>${sanitizeText(error)}</span></div>`;
-            buttonGroup.innerHTML = '';
-        }
-
+        
         // Basic XSS sanitization
         function sanitizeText(text) {
             const div = document.createElement('div');

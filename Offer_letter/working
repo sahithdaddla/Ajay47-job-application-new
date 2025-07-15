@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -710,8 +709,7 @@
 <body>
     <section class="hero">
         <div class="hero-content">
-            <h1>Welcome to Astrolite Tech Solutions</h1>
-            <p>Your Dream Career Starts Here</p>
+            <h1>Your Dream Career Starts Here</h1>
             <p>Join our innovative team and unlock your potential with exciting opportunities and growth</p>
         </div>
     </section>
